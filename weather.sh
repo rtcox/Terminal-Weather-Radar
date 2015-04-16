@@ -30,7 +30,7 @@ done
 #display images
 while [ $COUNTER -lt 5 ] ; do
   for i in $DOWNLOAD_DIR/map-*.txt; do
-     clear
+     printf '\033[1;1H'
      cat $i
      sleep 0.5
   done
