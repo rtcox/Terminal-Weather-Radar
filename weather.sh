@@ -1,23 +1,21 @@
 #!/bin/bash
 
 #Set variables
-DOWNLOAD_DIR=/tmp/weather/
 WEATHER_GIF=http://archive.wfaa.com/weather/images/core/animated-loops/comp/880x495/new_tarrant.gif
 
 COUNTER=0
 
-#check for  download directory
+# Create a download directory for the images things. The version of mktemp on
+# OS X *requires* a template, so we have to specify one. Since $TMPDIR isn't set
+# on all OSes, we have to check for that, too.
+TEMP_DIR=${TMPDIR:-/tmp}
+DOWNLOAD_DIR=$(mktemp -d /${TEMP_DIR}/terminal-radar.XXXXX)
 if [ ! -d "$DOWNLOAD_DIR" ]; then
   mkdir -p $DOWNLOAD_DIR
 fi
 
-#remove old files
-rm  $DOWNLOAD_DIR/*gif
-rm  $DOWNLOAD_DIR/*.png
-rm  $DOWNLOAD_DIR/*.txt
-
 #get weather gif
-wget $WEATHER_GIF -O "${DOWNLOAD_DIR}map.gif"
+wget $WEATHER_GIF -O "${DOWNLOAD_DIR}/map.gif"
 
 #extract gif to png
 convert -coalesce "${DOWNLOAD_DIR}/map.gif" "${DOWNLOAD_DIR}/map.png"
@@ -36,3 +34,5 @@ while [ $COUNTER -lt 5 ] ; do
   done
   let COUNTER=COUNTER+1
 done
+
+rm -rf ${DOWNLOAD_DIR}
